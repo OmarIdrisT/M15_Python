@@ -2,6 +2,7 @@ import csv
 import unicodedata
 import matplotlib.pyplot as plt
 import numpy as np
+import json
 
 file_path = "basket_players.csv"
 output_file_path = "jugadors_basket.csv"
@@ -12,6 +13,7 @@ POUNDS_TO_KGS = 0.45
 def main():
     generar_nou_csv()
     obtenir_dades_csv()
+    convertir_a_json()
 
 
 def generar_nou_csv():
@@ -247,6 +249,26 @@ def grafica_subplots(data):
         plt.show()
     except Exception as e: 
         print(f"Error al mostrar la gràfica de subplots: {e}")
+
+def convertir_a_json():
+    with open(output_file_path, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter='^')
+        next(reader)
+        data = []
+        for row in reader:
+            jugador = {
+                "nom": row[0],
+                "equip": row[1],
+                "posicio": row[2],
+                "altura": row[3],
+                "pes": row[4],
+                "edat": row[5]
+            }
+            data.append(jugador)
+
+    # Convertir a JSON
+    with open('jugadors_basket.json', 'w') as jsonfile:
+        json.dump(data, jsonfile, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
     main()
